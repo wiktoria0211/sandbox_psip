@@ -3,5 +3,4 @@ users_list:list = [
     {"name":"Monika", "nick":"monia", "posts":2},
     {"name":"Bartek", "nick":"baran", "posts":45},
     {"name":"Kamil", "nick":"Kamcio", "posts":69},
-    {"name": "Agata", "nick": "Agatka", "posts":1_0_000},
-]
+    {"name": "Kamil", "nick": "Kamilek", "posts": 69}, ]

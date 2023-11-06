@@ -7,7 +7,7 @@ def add_user_to(users_list:list) -> None:
 
     name = input('podaj imie ?')
     posts = input('podaj liczbe postow ?')
-    users_list.append({'nick':name,'posts':posts})
+    users_list.append({'name':name,'posts':posts})
 
 def remove_user_from(users_list: list) -> None:
     """
@@ -37,7 +37,7 @@ def show_users_from(users_list:list)->None:
     for user in users_list:
         print(f'twoj znajomy {user["name"]} dodal {user["posts"]}')
 
-        def gui() -> None:
+def gui(users_list) -> None:
             while True:
                 print(f'MENU: \n'
                       F'0: Zakoncz program \n'
@@ -66,4 +66,3 @@ def show_users_from(users_list:list)->None:
                         print('modyfikuj uzytkownika')
                         print('to bedzie zrobione')  # TODO add this function to my_functions
 
-        gui()

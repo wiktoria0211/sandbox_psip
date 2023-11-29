@@ -22,8 +22,27 @@ def get_coordinates_of(city:str)->list[float,float]:
     return [response_html_latitude, response_html_longitude]
 #for item in nazwy_miejscowosci:
     #print(get_coordinates_of(item))
-
+user = {"city":'Kraków', "name": "Kamil", "nick": "Kamcio", "posts":69}
 #zwrocic mape z pineska odnszaca sie do nazwy uzytkownika podanego z klawiatury
+def get_map_of(user:str)->None:
+    city = get_coordinates_of(user['city'])
+    map = folium.Map(
+        location=city,
+        tiles="OpenStreetMap",
+        zoom_start=12,
+    )
+
+    folium.Marker(
+        location=city,
+        popup=f'Tu rządzi {user["name"]} z GEOINFORMATYKI 2023 \n OU YEEEEAH!'
+    ).add_to(map)
+    map.save(f'mapka_{user["name"]}.html')
+get_map_of(user)
+
+
+
+
+
 #zwrocic mape z wszytskimi uzytkownikami z danej listy(znajomymi)
 ### rysowanie mapy
 city= get_coordinates_of(city='Zamość')

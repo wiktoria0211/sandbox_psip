@@ -1,3 +1,6 @@
+import requests
+
+
 def add_user_to(users_list:list) -> None:
     """
     add objcet to list
@@ -75,3 +78,6 @@ def gui(users_list) -> None:
                         print('modyfikuj uzytkownika')
                         update_user(users_list)
 
+def pogoda_z(miasto: str):
+    url = f"https://danepubliczne.imgw.pl/api/data/synop/station/{miasto}"
+    return requests.get(url).json()

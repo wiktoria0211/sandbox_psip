@@ -1,6 +1,6 @@
 users_list:list = [
-    {"name":"Wiktoria", "nick":"szmagala","posts":1},
-    {"name":"Monika", "nick":"monia", "posts":2},
-    {"name":"Bartek", "nick":"baran", "posts":45},
-    {"name":"Kamil", "nick":"Kamcio", "posts":69},
-    {"name": "Kamil", "nick": "Kamilek", "posts": 69}, ]
+    {"city":'Zamość', "name": "Wiktoria", "nick":"szmagala","posts":1},
+    {"city":'Lublin', "name": "Monika", "nick": "monia", "posts":2},
+    {"city":'Warszawa', "name": "Bartek", "nick": "baran", "posts":45},
+    {"city":'Kraków', "name": "Kamil", "nick": "Kamcio", "posts":69},
+    {"city":'Koszalin'"name": "Kamil", "nick": "Kamilek", "posts": 69}, ]

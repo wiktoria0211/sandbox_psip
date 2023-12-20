@@ -27,9 +27,9 @@ def GUI(users_list):
               f'4. modyfikuj uzytkownika\n'
               f'5. mapa jednego uzytkownika\n'
               f'6. mapka wszystkich uzytkownikow\n'
-              f'7. utwórz tabele\n'
+              f'7. utwórz tabele z przykladowymi danymi\n'
               f'8. wyczyść tabele z danych\n'
-              f'9. utworz tabele z przykladowymi danymi\n')
+              f'9. dodaj dane do listy\n')
         wyb = int(input('podaj docelowa funkcje '))
         print('wybrano', wyb)
 
@@ -62,13 +62,13 @@ def GUI(users_list):
                 print('wyswietlenie mapy wszytskich uzytkownikow')
                 get_map_of(users_list)
             case 7:
-                print('utworzono tabele')
-                tworzenie(db_params)
+                print('utworzono tabele wraz z danymi')
+                tworzenie_napełnienie(db_params)
             case 8:
                 print('usunieto dane z tabeli')
                 zamkniecie(db_params)
             case 9:
-                print('dodano tabele wraz z danymi')
+                print('dodano dane do listy')
                 zmiana_tabeli(db_params)
 
 
@@ -106,7 +106,6 @@ def get_coords(city: str) -> list[float, float]:
     return [res_h_lat, res_h_lon]
 
 
-
 ### SQL
 
 class User(Base):
@@ -118,7 +117,6 @@ class User(Base):
     nick = Column(String(100), nullable=True)
     city = Column(String(100), nullable=True)
     location = Column('geom', Geometry(geometry_type='POINT', srid=4326), nullable=True)
-
 
 
 def dodanie_tabeli(db_params):
@@ -168,7 +166,8 @@ def add_sql(listaa, db_params):
     place = input('Podaj miejsce: ')
     listaa.append({"name": name, "nick": nick, "posts": post, 'city': place})
     loc = get_coords(place)
-    sql_query = sqlalchemy.text(f"INSERT INTO public.tab_users(name, nick, city, posts, geom) VALUES ('{name}', '{nick}', '{place}', '{post}', 'POINT({loc[1]} {loc[0]})');")
+    sql_query = sqlalchemy.text(
+        f"INSERT INTO public.tab_users(name, nick, city, posts, geom) VALUES ('{name}', '{nick}', '{place}', '{post}', 'POINT({loc[1]} {loc[0]})');")
 
     connection.execute(sql_query)
     connection.commit()
@@ -193,13 +192,13 @@ def remove_sql(list, db_params):
             list.remove(user)
             print(user)
             print(type(user))
-            sql_query = sqlalchemy.text(f"DELETE FROM public.list_of_users WHERE name = '{user['name']}';")
+            sql_query = sqlalchemy.text(f"DELETE FROM public.tab_users WHERE name = '{user['name']}';")
     else:
         aa = tp_list[numer - 1]
         list.remove(aa)
         print(type(aa))
         print(aa['city'])
-        sql_query = sqlalchemy.text(f"DELETE FROM public.list_of_users WHERE nick = '{aa['nick']}';")
+        sql_query = sqlalchemy.text(f"DELETE FROM public.tab_users WHERE nick = '{aa['nick']}';")
 
     connection.execute(sql_query)
     connection.commit()
@@ -225,7 +224,7 @@ def updage_sql(list, db_params):
             loc = get_coords(new_citi)
 
     sql_query = sqlalchemy.text(
-        f"UPDATE public.list_of_users SET name='{new_name}', posts='{new_posts}', nick='{new_nick}', city='{new_citi}', geom='POINT({loc[1]} {loc[0]})' WHERE nick='{nick_of_user}';")
+        f"UPDATE public.tab_users SET name='{new_name}', posts='{new_posts}', nick='{new_nick}', city='{new_citi}', geom='POINT({loc[1]} {loc[0]})' WHERE nick='{nick_of_user}';")
 
     connection.execute(sql_query)
     connection.commit()
@@ -235,13 +234,13 @@ def zamkniecie(db_params):
     engine = sqlalchemy.create_engine(db_params)
     connection = engine.connect()
 
-    sql_query = sqlalchemy.text(f"DELETE FROM public.list_of_users WHERE name != 'AAAA';")
+    sql_query = sqlalchemy.text(f"DELETE FROM public.tab_users WHERE name != 'AAAA';")
 
     connection.execute(sql_query)
     connection.commit()
 
 
-def tworzenie(db_params):
+def tworzenie_napełnienie(db_params):
     engine = sqlalchemy.create_engine(db_params)
     Base = sqlalchemy.orm.declarative_base()
 
@@ -256,6 +255,22 @@ def tworzenie(db_params):
         location = Column('geom', Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
     Base.metadata.create_all(engine)
+
+    cwok_list: list = []
+
+    for cwok in users_list:
+        siti = get_coords(cwok['city'])
+        cwok_list.append(
+            User(
+                name=cwok['name'],
+                posts=cwok['posts'],
+                nick=cwok['nick'],
+                city=cwok['city'],
+                location=f'POINT({siti[1]} {siti[0]})'
+            )
+        )
+    session.add_all(cwok_list)
+    session.commit()
 
 
 def show_sql(db_params):
@@ -285,3 +300,4 @@ def zmiana_tabeli(db_params):
         working_list.append({"name": name, "nick": nick, "posts": post, 'city': city})
 
     return working_list
+
